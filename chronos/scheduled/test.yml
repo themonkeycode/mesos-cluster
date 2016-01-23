@@ -1,0 +1,20 @@
+name: test
+command: date >> /tmp/job.log
+shell: true
+epsilon: PT30M
+executor: ''
+executorFlags: ''
+retries: 2
+owner: zed@mesosphere.io
+async: false
+cpus: 0.1
+disk: 256.0
+mem: 128.0
+softError: false
+uris: []
+environmentVariables: []
+arguments: []
+highPriority: false
+runAsUser: root
+schedule: R//PT5M
+scheduleTimeZone: ''
