@@ -10,3 +10,5 @@ mesos-cluster
 * Ansible playbook for master node and slave nodes
 
 * Vagrant machines for each node
+
+* Based on https://open.mesosphere.com/advanced-course/
