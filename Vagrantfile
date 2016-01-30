@@ -19,7 +19,7 @@ Vagrant.configure(2) do |config|
     config.vm.define "node1" do |node1|
         node1.vm.network "private_network", ip: "192.168.33.10"
         node1.vm.hostname = "node1"
-        node1.vm.provision "shell", path: "boostrap/bootstrap-node1.sh"
+        node1.vm.provision "shell", path: "https://raw.githubusercontent.com/themonkeycode/mesos-cluster/master/bootstrap/bootstrap.sh", args: "[master] node1"
         #node1.vm.provision "ansible_local" do |ansible|
         #    ansible.playbook = "playbook.yml"
         #    ansible.groups = ANSIBLE_GROUPS
@@ -29,7 +29,7 @@ Vagrant.configure(2) do |config|
     config.vm.define "node2" do |node2|
         node2.vm.network "private_network", ip: "192.168.33.11"
         node2.vm.hostname = "node2"
-        node2.vm.provision "shell", path: "boostrap/bootstrap-node2.sh"
+        node2.vm.provision "shell", path: "boostrap/bootstrap.sh", args: "[slave] node2"
         #node2.vm.provision "ansible_local" do |ansible|
         #    ansible.provisioning_path = "/vagrant"
         #    ansible.playbook = "playbook.yml"
