@@ -11,4 +11,4 @@ cd $GOPATH/src/github.com/mesosphere/mesos-dns
 echo "build mesos-dns"
 godep go build .
 echo "copy config file"
-cp /vagrant/config_files/dns_config.json ./config.json
+cp /vagrant/config/dns_config.json ./config.json

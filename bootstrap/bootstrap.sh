@@ -9,4 +9,4 @@ sudo cp /vagrant/ansible/hosts-$2 /etc/ansible/hosts
 sudo echo "$1" >> /etc/ansible/hosts
 sudo echo "$2" >> /etc/ansible/hosts
 echo "Running Ansible playbook..."
-ansible-playbook -c local /vagrant/ansible/playbook.yml &> /vagrant/ansible/logs/playbook-$2.log
+ansible-playbook -v -c local /vagrant/ansible/playbook.yml &> /vagrant/ansible/logs/playbook-$2.log

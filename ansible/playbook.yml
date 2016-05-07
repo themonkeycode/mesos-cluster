@@ -4,18 +4,26 @@
   sudo: yes
   tasks:
       - name: update hosts file
-        template: src=../config_files/hosts.j2 dest=/etc/hosts
+        template: src=../config/hosts.j2 dest=/etc/hosts
       - name: install mesosphere yum repo
         yum: name=http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm state=present
       - name: install zookeeper yum repo
         yum: name=http://archive.cloudera.com/cdh4/one-click-install/redhat/6/x86_64/cloudera-cdh-4-0.x86_64.rpm state=present
       - name: install zookeeper
-        yum: pkg=zookeeper,zookeeper-server state=latest
+        yum: pkg=zookeeper,zookeeper-server state=latest disable_gpg_check=yes
+      - name: install mesos, marathon, chronos, and docker packages
+        yum: pkg=device-mapper-event-libs,mesos,marathon,chronos,docker state=latest
+      - name: set zookeeper to start on os init 
+        shell: chkconfig zookeeper-server on
+      - name: set mesos-master to start on os init 
+        shell: chkconfig mesos-master on
+      - name: set mesos-slave to start on os init 
+        shell: chkconfig mesos-slave on
+      - name: set marathon to start on os init 
+        shell: chkconfig marathon on
       - name: configure zookeeper ID
         become_user: zookeeper
         shell: zookeeper-server-initialize --myid=1
-      - name: install mesos, marathon, chronos, and docker packages
-        yum: pkg=device-mapper-event-libs,mesos,marathon,chronos,docker state=latest
       - name: configure containerizers
         lineinfile: dest=/etc/mesos-slave/containerizers create=yes line="docker,mesos"
       - name: start zookeeper
@@ -32,29 +40,22 @@
         service: name=docker state=started enabled=yes
       - name: install go, git, and dnsutil, nano and mlocate packages
         yum: pkg=golang,git,bind-utils,nano,mlocate state=latest
-      - name: install ruby for later chronos build
-        yum: pkg=ruby state=latest
+      - name: build docker outyet
+        become_user: vagrant
+        shell: sh /vagrant/outyet-app/docker-build-outyet.sh
       - name: build/configure mesos-dns
         become_user: vagrant
-        shell: sh ../config_files/installdns.sh
+        shell: sh /vagrant/config/installdns.sh
       - name: configure dns
-        template: src=../config_files/resolv.conf.j2 dest=/etc/resolv.conf
-      - name: install outyet
-        shell: docker load --input=/vagrant/outyet.tar.gz
-      - name: set zookeeper to start on os init 
-        shell: chkconfig zookeeper-server on
-      - name: set mesos-master to start on os init 
-        shell: chkconfig mesos-master on
-      - name: set mesos-slave to start on os init 
-        shell: chkconfig mesos-slave on
-      - name: set marathon to start on os init 
-        shell: chkconfig marathon on
+        template: src=../config/resolv.conf.j2 dest=/etc/resolv.conf
       - name: configure marathon services
         shell: cd /vagrant/marathon && sh post.sh
+      - name: install ruby for later chronos build
+        yum: pkg=ruby state=latest
       - name: sync chronos jobs
         shell: ruby /vagrant/chronos-sync.rb -u http://192.168.33.10:4400/ -p /vagrant/chronos
       - name: update the rsyslog config
-        template: src=../config_files/mesos.conf.j2 dest=/etc/rsyslog.d/mesos.conf
+        template: src=../config/mesos.conf.j2 dest=/etc/rsyslog.d/mesos.conf
       - name: restart rsyslog
         shell: service rsyslog restart
 
@@ -65,7 +66,7 @@
   sudo: yes
   tasks:
       - name: update hosts file
-        template: src=../config_files/hosts.j2 dest=/etc/hosts
+        template: src=../config/hosts.j2 dest=/etc/hosts
       - name: install mesosphere yum repo
         yum: name=http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm state=present
       - name: install mesos and docker packages
@@ -73,7 +74,7 @@
       - name: install nano and mlocate packages
         yum: pkg=nano,mlocate state=latest
       - name: configure dns
-        template: src=../config_files/resolv.conf.j2 dest=/etc/resolv.conf 
+        template: src=../config/resolv.conf.j2 dest=/etc/resolv.conf 
       - name: configure containerizers
         shell: echo 'docker,mesos' | sudo tee /etc/mesos-slave/containerizers
       - name: set zookeeper master

@@ -5,7 +5,7 @@ epsilon: PT30M
 executor: ''
 executorFlags: ''
 retries: 2
-owner: zed@mesosphere.io
+owner: dmarinelli@themonkeycode
 async: false
 cpus: 0.1
 disk: 256.0
