@@ -1,25 +1,25 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-ANSIBLE_GROUPS = {
-              "master" => ["node1"],
-              "nodes" => ["node2", "node3", "node4"],
-              "all_groups:children" => ["master", "nodes"]
-            }
+    ANSIBLE_GROUPS = {
+        "master" => ["node1"],
+        "nodes" => ["node2", "node3", "node4"],
+        "all_groups:children" => ["master", "nodes"]
+    }
 
 
 Vagrant.configure(2) do |config|
-    config.vm.box = "bento/centos-7.1"
+    # v2 configs
+    config.vm.box = "centos/7"
 
     config.vm.provider "virtualbox" do |v|
         v.memory = 1024
     end
 
-
     config.vm.define "node1" do |node1|
         node1.vm.network "private_network", ip: "192.168.33.10"
         node1.vm.hostname = "node1"
-        node1.vm.provision "shell", path: "https://raw.githubusercontent.com/themonkeycode/mesos-cluster/master/bootstrap/bootstrap.sh", args: "[master] node1"
+        #node1.vm.provision "shell", path: "boostrap/bootstrap.sh", args: "[master] node1"
         #node1.vm.provision "ansible_local" do |ansible|
         #    ansible.playbook = "playbook.yml"
         #    ansible.groups = ANSIBLE_GROUPS
